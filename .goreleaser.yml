@@ -1,0 +1,46 @@
+project_name: jetstream
+
+release:
+  github:
+    owner: choria-io
+    name: tally
+  name_template: "Release {{.Tag}}"
+  draft: true
+
+changelog:
+  skip: true
+
+builds:
+  - main: main.go
+    id: tally
+    binary: tally
+    env:
+      - GO111MODULE=on
+    goos:
+      - linux
+    goarch:
+      - amd64
+
+archives:
+  - name_template: "{{.ProjectName}}-{{.Version}}-{{.Os}}-{{.Arch}}{{if .Arm}}{{.Arm}}{{end}}"
+    wrap_in_directory: true
+    format: zip
+    files:
+      - README.md
+      - LICENSE
+
+dockers:
+  - goos: linux
+    goarch: amd64
+    skip_push: true
+    binaries:
+      - tally
+    image_templates:
+      - "choria/tally:latest"
+      - "choria/tally:{{.Version}}"
+    extra_files:
+      - README.md
+
+checksum:
+  name_template: "SHA256SUMS"
+  algorithm: sha256
