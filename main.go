@@ -38,7 +38,7 @@ func main() {
 	app.Flag("tls", "Use TLS when connecting to the middleware").Hidden().Default("true").BoolVar(&tls)
 	app.Flag("component", "Component to tally").Default("server").StringVar(&componentFilter)
 	app.Flag("port", "Port to listen on").Default("8080").IntVar(&port)
-	app.Flag("prefix", "Prefix for statistic keys").StringVar(&prefix)
+	app.Flag("prefix", "Prefix for statistic keys").Default("choria_tally").StringVar(&prefix)
 
 	kingpin.MustParse(app.Parse(os.Args[1:]))
 
