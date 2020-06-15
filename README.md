@@ -22,6 +22,7 @@ as below:
 |choria_tally_versions|Gauge indicating the number of running components by version|
 |choria_tally_maintenance_time|Time spent doing regular maintenance on the stored data|
 |choria_tally_processing_time|The time taken to process events|
+|choria_tally_nodes_expired|The number of nodes removed during maintenance runs|
 
 Additionally, this tool can also watch Choria Autonomous Agent events, today it supports transition events only:
 
