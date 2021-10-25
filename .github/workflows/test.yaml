@@ -21,3 +21,4 @@ jobs:
         uses: choria-io/actions/lint_and_test/go@main
         with:
           ginkgo: "yes"
+          run_tests: "no"
