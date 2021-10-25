@@ -4,7 +4,7 @@ In large dynamic fleets it's hard to keep track of counts and versions of nodes.
 a running network and gather versions of a specific component. The results are exposed as Prometheus metrics.
 
 ```nohighlight
-$ tally --component server --port 8080 --prefix choria_tally
+$ tally --component '*' --port 8080 --prefix choria_tally
 ```
 
 For this to work it uses the normal Choria client configuration to connect to the right middleware using TLS and
@@ -20,14 +20,18 @@ as below:
 |choria_tally_process_errors|The number of events received that failed to process|
 |choria_tally_event_types|The number of events received by type|
 |choria_tally_versions|Gauge indicating the number of running components by version|
-|choria_tally_maintenance_time|Time spent doing regular maintenance on the stored data|
 |choria_tally_processing_time|The time taken to process events|
 |choria_tally_nodes_expired|The number of nodes removed during maintenance runs|
 
-Additionally, this tool can also watch Choria Autonomous Agent events, today it supports transition events only:
+Additionally, this tool can also watch [Choria Autonomous Agent](https://choria.io/docs/autoagents/) events, today it supports transition events only:
 
 |Metric|Description|
 |------|-----------|
 |choria_tally_machine_transition|Information about transition events handled by Choria Autonomous Agents|
 
-Here the prefix - `choria_tally` - is what would be the default if you didn't specify `--prefix`.
+If you have any [Choria Governors](https://choria.io/docs/streams/governor/) the tool can listen to the events
+these emit and report on those.
+
+|Metric|Description|
+|------|-----------|
+|choria_tally_governor|Events and their types seen per Governor and per Component|

@@ -3,8 +3,9 @@ module github.com/choria-io/tally
 go 1.14
 
 require (
-	github.com/alecthomas/units v0.0.0-20190924025748-f65c72e2690d // indirect
-	github.com/choria-io/go-choria v0.14.1-0.20200615080020-df778a5f9b5f
-	github.com/prometheus/client_golang v1.6.0
+	github.com/Netflix/go-expect v0.0.0-20211003183012-e1a7c020ce25 // indirect
+	github.com/choria-io/go-choria v0.24.2-0.20211025180729-ab90942fe138
+	github.com/hinshun/vt10x v0.0.0-20180809195222-d55458df857c // indirect
+	github.com/prometheus/client_golang v1.11.0
 	gopkg.in/alecthomas/kingpin.v2 v2.2.6
 )
