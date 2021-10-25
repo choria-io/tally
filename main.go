@@ -24,7 +24,6 @@ var (
 	debug           bool
 	tls             bool
 	componentFilter string
-	typeFilter      string
 	pidfile         string
 	cfgfile         string
 	prefix          string
