@@ -3,7 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
-	"io/ioutil"
+	"github.com/choria-io/fisk"
 	"net/http"
 	"os"
 	"os/signal"
@@ -13,12 +13,11 @@ import (
 	"github.com/choria-io/go-choria/config"
 	"github.com/choria-io/go-choria/lifecycle/tally"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
-	"gopkg.in/alecthomas/kingpin.v2"
 )
 
 var (
-	// Version is the release version to be set at compile time
-	Version = "development"
+	// version is the release version to be set at compile time
+	version = "development"
 
 	port            int
 	debug           bool
@@ -27,10 +26,12 @@ var (
 	pidfile         string
 	cfgfile         string
 	prefix          string
+	election        string
 )
 
 func main() {
-	app := kingpin.New("tally", "The Choria network observation tool")
+	app := fisk.New("tally", "The Choria network observation tool")
+	app.Version(version)
 	app.Author("R.I.Pienaar <rip@devco.net>")
 	app.Flag("config", "Configuration file to use").ExistingFileVar(&cfgfile)
 	app.Flag("debug", "Enable debug logging").BoolVar(&debug)
@@ -38,8 +39,9 @@ func main() {
 	app.Flag("component", "Component to tally").Default("*").StringVar(&componentFilter)
 	app.Flag("port", "Port to listen on").Default("8080").IntVar(&port)
 	app.Flag("prefix", "Prefix for statistic keys").Default("choria_tally").StringVar(&prefix)
+	app.Flag("election", "Perform leader election in the named campaign").PlaceHolder("CAMPAIGN").StringVar(&election)
 
-	kingpin.MustParse(app.Parse(os.Args[1:]))
+	app.MustParseWithUsage(os.Args[1:])
 
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
@@ -47,8 +49,8 @@ func main() {
 	go interruptWatcher(ctx, cancel)
 
 	if pidfile != "" {
-		err := ioutil.WriteFile(pidfile, []byte(fmt.Sprintf("%d", os.Getpid())), 0644)
-		kingpin.FatalIfError(err, "Could not write pid file %s: %s", pidfile, err)
+		err := os.WriteFile(pidfile, []byte(fmt.Sprintf("%d", os.Getpid())), 0644)
+		fisk.FatalIfError(err, "Could not write pid file %s: %s", pidfile, err)
 	}
 
 	if cfgfile == "" {
@@ -56,7 +58,7 @@ func main() {
 	}
 
 	cfg, err := config.NewConfig(cfgfile)
-	kingpin.FatalIfError(err, "could not parse configuration: %s", err)
+	fisk.FatalIfError(err, "could not parse configuration: %s", err)
 
 	if debug {
 		cfg.LogLevel = "debug"
@@ -68,23 +70,23 @@ func main() {
 	}
 
 	fw, err := choria.NewWithConfig(cfg)
-	kingpin.FatalIfError(err, "could not set up Choria: %s", err)
+	fisk.FatalIfError(err, "could not set up Choria: %s", err)
 
 	err = recordTally(ctx, fw)
 
-	kingpin.FatalIfError(err, "Could not run: %s", err)
+	fisk.FatalIfError(err, "Could not run: %s", err)
 }
 
 func recordTally(ctx context.Context, fw *choria.Framework) error {
 	log := fw.Logger("tally")
-	log.Infof("Choria Lifecycle Tally version %s starting listening on port %d", Version, port)
+	log.Infof("Choria Lifecycle Tally version %s starting listening on port %d", version, port)
 
 	conn, err := fw.NewConnector(ctx, fw.MiddlewareServers, fw.Certname(), log)
 	if err != nil {
 		return fmt.Errorf("cannot connect: %s", err)
 	}
 
-	recorder, err := tally.New(tally.Component(componentFilter), tally.Logger(log), tally.StatsPrefix(prefix), tally.Connection(conn))
+	recorder, err := tally.New(tally.Component(componentFilter), tally.Logger(log), tally.StatsPrefix(prefix), tally.Connection(conn), tally.Election(election))
 	if err != nil {
 		return fmt.Errorf("could not create recorder: %s", err)
 	}

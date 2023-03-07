@@ -14,8 +14,6 @@ builds:
   - main: main.go
     id: tally
     binary: tally
-    env:
-      - GO111MODULE=on
     goos:
       - linux
     goarch:
@@ -33,8 +31,6 @@ dockers:
   - goos: linux
     goarch: amd64
     skip_push: true
-    binaries:
-      - tally
     image_templates:
       - "choria/tally:latest"
       - "choria/tally:{{.Version}}"
