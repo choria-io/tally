@@ -1,24 +1,23 @@
-name: Ginkgo Tests
+name: Unit Tests
 on: [push, pull_request]
 
 jobs:
   test:
     strategy:
       matrix:
-        go: [1.16, 1.17]
+        go: ["1.19", "1.20"]
 
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Setup Go
-        uses: actions/setup-go@v2
+        uses: actions/setup-go@v3
         with:
           go-version: ${{matrix.go}}
 
       - name: Lint and Test
         uses: choria-io/actions/lint_and_test/go@main
         with:
-          ginkgo: "yes"
           run_tests: "no"
