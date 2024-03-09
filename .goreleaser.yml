@@ -36,6 +36,8 @@ dockers:
       - "choria/tally:{{.Version}}"
     extra_files:
       - README.md
+    build_flag_templates:
+      - "--platform=linux/amd64"
 
 checksum:
   name_template: "SHA256SUMS"
