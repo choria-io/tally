@@ -8,7 +8,7 @@ StandardOutput=syslog
 StandardError=syslog
 User=root
 Group=root
-ExecStart={{cpkg_bindir}}/{{cpkg_name}} run --config={{cpkg_etcdir}}/config.json
+ExecStart={{cpkg_bindir}}/{{cpkg_name}} --component '*' --port 8080 --prefix choria_tally --config={{cpkg_etcdir}}/choria.conf
 
 [Install]
 WantedBy=multi-user.target

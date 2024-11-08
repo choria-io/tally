@@ -42,7 +42,7 @@ rm -rf %{buildroot}
 %{__install} -m0644 dist/sysconfig %{buildroot}/etc/sysconfig/%{pkgname}
 %{__install} -m0644 dist/%{pkgname}-logrotate %{buildroot}/etc/logrotate.d/%{pkgname}
 %{__install} -m0755 %{binary} %{buildroot}%{bindir}/%{pkgname}
-%{__install} -m0755 dist/config.json %{buildroot}%{etcdir}/config.json
+%{__install} -m0755 dist/choria.conf %{buildroot}%{etcdir}/choria.conf
 
 touch %{buildroot}/var/log/%{pkgname}/%{pkgname}.log
 
