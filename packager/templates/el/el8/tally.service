@@ -1,0 +1,14 @@
+[Unit]
+Description=The Choria Tally Service
+After=network.target
+
+[Service]
+EnvironmentFile=/etc/sysconfig/{{cpkg_name}}
+StandardOutput=syslog
+StandardError=syslog
+User=root
+Group=root
+ExecStart={{cpkg_bindir}}/{{cpkg_name}} --component '*' --port 8080 --prefix choria_tally --config={{cpkg_etcdir}}/choria.conf
+
+[Install]
+WantedBy=multi-user.target
